@@ -26,9 +26,11 @@ model Billboard {
   id          String   @id @default(uuid()) @map("_id")
   storeId     String
   store       Store @relation("StoreToBillboard", fields: [storeId], references: [id])
-  label       String
+  label1      String?
+  label2      String?
   imageUrl    String
-  categories  Category[]
+  linkUrl     String?
+  categories  Category[] 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -40,9 +42,11 @@ model Category {
   storeId     String      // Foreign Key to Store
   store       Store       @relation("StoreToCategory", fields: [storeId], references: [id])
   billboardId String      // Foreign Key to Billboard
-  billboard   Billboard   @relation(fields: [billboardId], references: [id])
+  billboard   Billboard?  @relation(fields: [billboardId], references: [id])
   name        String
   imageUrl    String
+  descriptions String
+  progressBar  String?
   products    Product[]   @relation("CategoryToProduct")
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt

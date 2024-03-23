@@ -26,7 +26,9 @@ import { AlertModal } from "@/components/modals/alert-modal"
 import ImageUpload from "@/components/ui/image-upload"
 
 const formSchema = z.object({
-  label: z.string().min(1),
+  label1: z.string().min(1),
+  label2: z.string().min(1),
+  linkUrl: z.string().min(1),
   imageUrl: z.string().min(1),
 });
 
@@ -53,7 +55,9 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
   const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      label: '',
+      label1: '',
+      label2: '',
+      linkUrl: '',
       imageUrl: ''
     }
   });
@@ -136,12 +140,38 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="label"
+              name="label1"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Label</FormLabel>
+                  <FormLabel>First Label</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Billboard label" {...field} />
+                    <Input disabled={loading} placeholder="Billboard First label" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="label2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Second Label</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Billboard Second label" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="linkUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Link Url</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Billboard Link" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

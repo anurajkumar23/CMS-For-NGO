@@ -74,14 +74,10 @@ export async function PATCH(
 
     const body = await req.json();
     
-    const { label, imageUrl } = body;
+    const { label1, label2, linkUrl, imageUrl } = body;
     
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
-    }
-
-    if (!label) {
-      return new NextResponse("Label is required", { status: 400 });
     }
 
     if (!imageUrl) {
@@ -108,7 +104,9 @@ export async function PATCH(
         id: params.billboardId,
       },
       data: {
-        label,
+        label1,
+        label2,
+        linkUrl,
         imageUrl
       }
     });
