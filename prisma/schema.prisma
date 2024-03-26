@@ -46,8 +46,8 @@ model Campaign {
   heading      String
   imageUrl     String
   descriptions String?
-  goalAmount   String?
-  raisedAmount String?
+  goalAmount   Float?
+  raisedAmount Float?
   donations    Donation[] @relation("DonationsToCampaign")
   createdAt    DateTime   @default(now()) @map("createdAt")
 

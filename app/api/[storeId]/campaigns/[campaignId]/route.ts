@@ -18,13 +18,9 @@ export async function GET(
       }
     });
   
-    if (!campaign) {
-      return new NextResponse("Campaign not found", { status: 404 });
-    }
-
     return NextResponse.json(campaign);
   } catch (error) {
-    console.error('[CAMPAIGN_GET]', error);
+    console.log('[CAMPAIGN_GET]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 };
@@ -55,15 +51,15 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const deletedCampaign = await prismadb.campaign.delete({
+    const campaign = await prismadb.campaign.delete({
       where: {
         id: params.campaignId,
       }
     });
   
-    return NextResponse.json(deletedCampaign);
+    return NextResponse.json(campaign);
   } catch (error) {
-    console.error('[CAMPAIGN_DELETE]', error);
+    console.log('[CAMPAIGN_DELETE]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 };
@@ -78,8 +74,16 @@ export async function PATCH(
 
     const body = await req.json();
     
-    const {  campaign, heading, imageUrl, descriptions, goalAmount, raisedAmount } = body;
+    const { campaign,
+      heading,
+      imageUrl,
+      descriptions,
+      goalAmount,
+      raisedAmount } = body;
     
+    if (!userId) {
+      return new NextResponse("Unauthenticated", { status: 403 });
+    }
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
     }
@@ -88,12 +92,15 @@ export async function PATCH(
       return new NextResponse("Campaign is required", { status: 400 });
     }
 
-    if (!imageUrl) {
-      return new NextResponse("Image URL is required", { status: 400 });
+    if (!imageUrl ) {
+      return new NextResponse("Image is required", { status: 400 });
     }
 
+    if (!heading) {
+      return new NextResponse("Heading is required", { status: 400 });
+    }
     if (!params.campaignId) {
-      return new NextResponse("Campaign id is required", { status: 400 });
+      return new NextResponse("Category id is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -107,23 +114,23 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const updatedCampaign = await prismadb.campaign.update({
+    const campaigns = await prismadb.campaign.update({
       where: {
         id: params.campaignId,
       },
       data: {
         campaign,
-        imageUrl,
         heading,
+        imageUrl,
         descriptions,
         goalAmount,
         raisedAmount,
       }
     });
   
-    return NextResponse.json(updatedCampaign);
+    return NextResponse.json(campaigns);
   } catch (error) {
-    console.error('[CAMPAIGN_PATCH]', error);
+    console.log('[CAMPAIGN_PATCH]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 };

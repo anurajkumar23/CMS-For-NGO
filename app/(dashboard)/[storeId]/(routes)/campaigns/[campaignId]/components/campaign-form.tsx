@@ -55,16 +55,22 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
   const toastMessage = initialData ? 'Campaign updated.' : 'Campaign created.';
   const action = initialData ? 'Save changes' : 'Create';
 
+  const defaultValues = initialData ? {
+    ...initialData,
+    raisedAmount: initialData.raisedAmount !== null ? parseFloat(String(initialData.raisedAmount)) : null,
+    goalAmount: initialData.goalAmount !== null ? parseFloat(String(initialData.goalAmount)) : null,
+  } : {
+    campaign: '',
+    heading: '',
+    descriptions: '',
+    raisedAmount: null,
+    goalAmount: null,
+    imageUrl: '',
+  };
+
   const form = useForm<CampaignFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      campaign: '',
-      heading: '',
-      descriptions: '',
-      raisedAmount: '',
-      goalAmount: '',
-      imageUrl: '',
-    }
+    defaultValues
   });
 
   const onSubmit = async (data: CampaignFormValues) => {
