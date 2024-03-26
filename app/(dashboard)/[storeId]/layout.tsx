@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { auth, authMiddleware } from '@clerk/nextjs';
+import { auth} from '@clerk/nextjs';
 import Navbar from '@/components/navbar'
 import prismadb from '@/lib/prismadb';
 
@@ -11,7 +11,7 @@ export default async function DashboardLayout({
   params: { storeId: string }
 }) {
   
-  await authMiddleware();
+
     
   const { userId } = auth();
 

@@ -3,144 +3,159 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url = env("DATABASE_URL")
+  provider     = "mongodb"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 model Store {
-  id          String   @id @default(uuid()) @map("_id")
-  name            String
-  userId          String
-  billboards      Billboard[] @relation("StoreToBillboard")
-  categories      Category[] @relation("StoreToCategory")
-  products        Product[]  @relation("StoreToProduct")
-  sizes           Size[]     @relation("StoreToSize")
-  colors          Color[]     @relation("StoreToColor")
-  orders          Order[]     @relation("StoreToOrder")
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id          String       @id @default(uuid()) @map("_id")
+  name        String
+  userId      String
+  billboards  Billboard[]  @relation("BillboardsToStore")
+  campaigns   Campaign[]   @relation("CampaignsToStore")
+  donations   Donation[]   @relation("DonationsToStore")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  blogs       Blog[]       @relation("BlogsToStore")
+  gallery     Gallery[]    @relation("GalleryToStore")
+  users       User[]       @relation("UsersToStore")
+  featureBars FeatureBar[] @relation("FeatureBarsToStore")
+  aboutUs     AboutUs[]    @relation("AboutUsToStore")
 }
 
 model Billboard {
-  id          String   @id @default(uuid()) @map("_id")
-  storeId     String
-  store       Store @relation("StoreToBillboard", fields: [storeId], references: [id])
-  label1      String?
-  label2      String?
-  imageUrl    String
-  linkUrl     String?
-  categories  Category[] 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid()) @map("_id")
+  storeId   String
+  store     Store    @relation("BillboardsToStore", fields: [storeId], references: [id])
+  label1    String?
+  label2    String?
+  imageUrl  String
+  linkUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([storeId])
 }
 
-model Category {
-  id          String   @id @default(uuid()) @map("_id")
-  storeId     String      // Foreign Key to Store
-  store       Store       @relation("StoreToCategory", fields: [storeId], references: [id])
-  billboardId String      // Foreign Key to Billboard
-  billboard   Billboard?  @relation(fields: [billboardId], references: [id])
-  name        String
-  imageUrl    String
+model Campaign {
+  id           String     @id @default(uuid()) @map("_id")
+  storeId      String // Foreign Key to Store
+  store        Store      @relation("CampaignsToStore", fields: [storeId], references: [id])
+  campaign     String
+  heading      String
+  imageUrl     String
+  descriptions String?
+  goalAmount   String?
+  raisedAmount String?
+  donations    Donation[] @relation("DonationsToCampaign")
+  createdAt    DateTime   @default(now()) @map("createdAt")
+
+  @@index([storeId])
+  @@map("Campaigns")
+}
+
+model Blog {
+  id           String   @id @default(uuid()) @map("_id")
+  storeId      String // Foreign Key to Store
+  store        Store    @relation("BlogsToStore", fields: [storeId], references: [id])
+  imageUrl     String
+  heading      String
   descriptions String
-  progressBar  String?
-  products    Product[]   @relation("CategoryToProduct")
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  author       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  @@index([storeId])
-  @@index([billboardId])
+  @@map("Blog")
 }
 
-model Product {
-  id          String   @id @default(uuid()) @map("_id")
-  storeId     String    // Foreign Key to Store
-  store       Store     @relation("StoreToProduct", fields: [storeId], references: [id])
-  categoryId  String    // Foreign Key to Category
-  category    Category  @relation("CategoryToProduct", fields: [categoryId], references: [id])
-  name        String
-  price       Float
-  discountedPrice  Float?
-  newArrivals Boolean   @default(false)
-  isFeatured  Boolean   @default(false)
-  isArchived  Boolean   @default(false)
-  sizeId      String    // Foreign Key to Size
-  size        Size      @relation(fields: [sizeId], references: [id])
-  colorId     String    // Foreign Key to Color
-  color       Color     @relation(fields: [colorId], references: [id])
-  images      Image[]   // Relation to Image model
-  orderItems  OrderItem[]   // Relation to Order model
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([storeId])
-  @@index([categoryId])
-  @@index([sizeId])
-  @@index([colorId])
-}
-
-model Order {
-  id          String   @id @default(uuid()) @map("_id")
-  storeId     String    // Foreign Key to Store
-  store       Store     @relation("StoreToOrder", fields: [storeId], references: [id])
-  orderItems OrderItem[] // Relation to OrderItem model
-  isPaid     Boolean   @default(false)
-  phone      String    @default("")
-  address    String    @default("")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+model Donation {
+  id           String          @id @default(uuid()) @map("_id")
+  storeId      String // Foreign Key to Store
+  store        Store           @relation("DonationsToStore", fields: [storeId], references: [id])
+  campaign     Campaign        @relation("DonationsToCampaign", fields: [campaignId], references: [id])
+  campaignId   String          @map("campaignsId") // Foreign Key to Campaigns
+  amount       Float
+  citizenship  CitizenshipEnum
+  fullName     String
+  email        String
+  phoneNumber  String
+  governmentId String
+  address      String
+  pincode      String
+  state        String
+  city         String
+  isPaid       Boolean         @default(false)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
   @@index([storeId])
 }
 
-// Intermediary for a many-to-many relationship
-model OrderItem {
-  id          String   @id @default(uuid()) @map("_id")
-  orderId   String  // Foreign Key to Order
-  order     Order   @relation(fields: [orderId], references: [id])
-  productId String  // Foreign Key to Product
-  product   Product @relation(fields: [productId], references: [id])
+model Gallery {
+  id      String  @id @default(uuid()) @map("_id")
+  storeId String // Foreign Key to Store
+  store   Store   @relation("GalleryToStore", fields: [storeId], references: [id])
+  images  Image[]
 
-  @@index([orderId])
-  @@index([productId])
+  @@map("Gallery")
 }
 
-model Size {
-  id          String   @id @default(uuid()) @map("_id")
-  storeId     String    // Foreign Key to Store
-  store       Store     @relation("StoreToSize", fields: [storeId], references: [id])
-  name        String
-  value       String
-  products    Product[] // Relation to Product model
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([storeId])
-}
-
-model Color {
-  id          String   @id @default(uuid()) @map("_id")
-  storeId     String   // Foreign Key to Store
-  store       Store    @relation("StoreToColor", fields: [storeId], references: [id])
-  name        String
-  value       String
-  products    Product[] // Relation to Product model
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([storeId])
+model User {
+  id      String @id @default(uuid()) @map("_id")
+  storeId String // Foreign Key to Store
+  store   Store  @relation("UsersToStore", fields: [storeId], references: [id])
+  name    String
+  phone   String
+  email   String
+  address String
 }
 
 model Image {
-  id          String   @id @default(uuid()) @map("_id")
-  productId   String   // Foreign Key to Product
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url         String   // URL of the image
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid()) @map("_id")
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  gallery   Gallery? @relation(fields: [galleryId], references: [id])
+  galleryId String?
 
-  @@index([productId])
+  @@index([galleryId])
+}
+
+model FeatureBar {
+  id         String  @id @default(uuid()) @map("_id")
+  storeId    String // Foreign Key to Store
+  store      Store   @relation("FeatureBarsToStore", fields: [storeId], references: [id])
+  donors     String?
+  lifeSaved  String?
+  donated    String?
+  volunteers String?
+}
+
+enum CitizenshipEnum {
+  Indian
+  Foreign
+}
+
+model AboutUs {
+  id            String    @id @default(uuid()) @map("_id")
+  storeId       String // Foreign Key to Store
+  store         Store     @relation("AboutUsToStore", fields: [storeId], references: [id])
+  trustees      Trustee[] @relation("AboutUsToTrustee")
+  ourMembersUrl String?
+  phoneNo       String?
+  address       String?
+
+  @@map("AboutUs")
+}
+
+model Trustee {
+  id        String  @id @default(uuid()) @map("_id")
+  name      String
+  post      String
+  photoUrl  String?
+  aboutUs   AboutUs @relation("AboutUsToTrustee", fields: [aboutUsId], references: [id])
+  aboutUsId String  @map("aboutUs") // Foreign Key to AboutUs
+
+  @@map("Trustee")
 }

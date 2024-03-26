@@ -9,14 +9,14 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { ApiAlert } from "@/components/ui/api-alert";
 
-import { columns, CategoryColumn } from "./columns";
+import { columns, CampaignColumn } from "./columns";
 import { ApiList } from "@/components/ui/api-list";
 
-interface CategoriesClientProps {
-  data: CategoryColumn[];
+interface CampaignsClientProps {
+  data: CampaignColumn[];
 }
 
-export const CategoriesClient: React.FC<CategoriesClientProps> = ({
+export const CampaignsClient: React.FC<CampaignsClientProps> = ({
   data
 }) => {
   const params = useParams();
@@ -25,16 +25,16 @@ export const CategoriesClient: React.FC<CategoriesClientProps> = ({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title={`Categories (${data.length})`} description="Manage categories for your store" />
-        <Button onClick={() => router.push(`/${params.storeId}/categories/new`)}>
+        <Heading title={`Campaigns (${data.length})`} description="Manage campaigns for your store" />
+        <Button onClick={() => router.push(`/${params.storeId}/campaigns/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
-      <Heading title="API" description="API Calls for Categories" />
+      <Heading title="API" description="API Calls for Campaigns" />
       <Separator />
-      <ApiList entityName="categories" entityIdName="categoryId" />
+      <ApiList entityName="campaigns" entityIdName="CampaignId" />
     </>
   );
 };

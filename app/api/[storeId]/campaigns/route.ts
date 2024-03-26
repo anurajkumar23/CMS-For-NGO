@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs';
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs";
 
-import prismadb from '@/lib/prismadb';
- 
+import prismadb from "@/lib/prismadb";
+
 export async function POST(
   req: Request,
   { params }: { params: { storeId: string } }
@@ -12,26 +12,29 @@ export async function POST(
 
     const body = await req.json();
 
-    const { name, billboardId , imageUrl, descriptions, progressBar} = body;
+    const {
+      campaign,
+      heading,
+      imageUrl,
+      descriptions,
+      goalAmount,
+      raisedAmount,
+    } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
     }
 
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
-    }
-    
-    if (!imageUrl) {
-      return new NextResponse("Image URL is required", { status: 400 });
+    if (!campaign) {
+      return new NextResponse("Campaign is required", { status: 400 });
     }
 
-    if (!descriptions) {
-      return new NextResponse("Descriptions is required", { status: 400 });
+    if (!imageUrl ) {
+      return new NextResponse("Image is required", { status: 400 });
     }
-    
-    if (!billboardId) {
-      return new NextResponse("Billboard ID is required", { status: 400 });
+
+    if (!heading) {
+      return new NextResponse("Heading is required", { status: 400 });
     }
 
     if (!params.storeId) {
@@ -42,47 +45,51 @@ export async function POST(
       where: {
         id: params.storeId,
         userId,
-      }
+      },
     });
 
     if (!storeByUserId) {
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const category = await prismadb.category.create({
+    const Campaign = await prismadb.campaign.create({
       data: {
-        name,
-        billboardId,
-        imageUrl,
-        storeId: params.storeId,
-      }
+      campaign,
+      heading,
+      imageUrl,
+      descriptions,
+      goalAmount,
+      raisedAmount,
+      storeId: params.storeId,
+      },
     });
-  
-    return NextResponse.json(category);
+
+    return NextResponse.json(Campaign);
   } catch (error) {
-    console.log('[CATEGORIES_POST]', error);
+    console.log("[CAMPAIGNS_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}
 
 export async function GET(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
   try {
+
     if (!params.storeId) {
       return new NextResponse("Store id is required", { status: 400 });
     }
 
-    const categories = await prismadb.category.findMany({
+    const campaigns = await prismadb.campaign.findMany({
       where: {
-        storeId: params.storeId
+        storeId: params.storeId,
       }
     });
-  
-    return NextResponse.json(categories);
+
+    return NextResponse.json(campaigns);
   } catch (error) {
-    console.log('[CATEGORIES_GET]', error);
+    console.log("[CAMPAIGNS_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
-};
+}

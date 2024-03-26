@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { Trash } from "lucide-react"
-import { Billboard, Category } from "@prisma/client"
+import { Campaign } from "@prisma/client"
 import { useParams, useRouter } from "next/navigation"
 
 import { Input } from "@/components/ui/input"
@@ -27,21 +27,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import ImageUpload from "@/components/ui/image-upload"
 
 const formSchema = z.object({
-  name: z.string().min(2),
-  billboardId: z.string().min(1),
+  campaign: z.string().min(2),
+  heading: z.string().min(1),
+  descriptions: z.string().min(1),
+  raisedAmount: z.coerce.number().min(1).optional(),
+  goalAmount: z.coerce.number().min(1),
   imageUrl: z.string().min(1),
 });
 
-type CategoryFormValues = z.infer<typeof formSchema>
+type CampaignFormValues = z.infer<typeof formSchema>
 
-interface CategoryFormProps {
-  initialData: Category | null;
-  billboards: Billboard[];
+interface CampaignFormProps {
+  initialData: Campaign | null;
 };
 
-export const CategoryForm: React.FC<CategoryFormProps> = ({
+export const CampaignForm: React.FC<CampaignFormProps> = ({
   initialData,
-  billboards
 }) => {
   const params = useParams();
   const router = useRouter();
@@ -49,30 +50,33 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? 'Edit category' : 'Create category';
-  const description = initialData ? 'Edit a category.' : 'Add a new category';
-  const toastMessage = initialData ? 'Category updated.' : 'Category created.';
+  const title = initialData ? 'Edit campaign' : 'Create campaign';
+  const description = initialData ? 'Edit a campaign.' : 'Add a new campaign';
+  const toastMessage = initialData ? 'Campaign updated.' : 'Campaign created.';
   const action = initialData ? 'Save changes' : 'Create';
 
-  const form = useForm<CategoryFormValues>({
+  const form = useForm<CampaignFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
-      name: '',
-      billboardId: '',
+      campaign: '',
+      heading: '',
+      descriptions: '',
+      raisedAmount: '',
+      goalAmount: '',
       imageUrl: '',
     }
   });
 
-  const onSubmit = async (data: CategoryFormValues) => {
+  const onSubmit = async (data: CampaignFormValues) => {
     try {
       setLoading(true);
       if (initialData) {
-        await axios.patch(`/api/${params.storeId}/categories/${params.categoryId}`, data);
+        await axios.patch(`/api/${params.storeId}/campaigns/${params.campaignId}`, data);
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
+        await axios.post(`/api/${params.storeId}/campaigns`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/categories`);
+      router.push(`/${params.storeId}/campaigns`);
       toast.success(toastMessage);
     } catch (error: any) {
       toast.error('Something went wrong.');
@@ -84,12 +88,12 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/categories/${params.categoryId}`);
+      await axios.delete(`/api/${params.storeId}/campaigns/${params.campaignId}`);
       router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success('Category deleted.');
+      router.push(`/${params.storeId}/campaigns`);
+      toast.success('Campaign deleted.');
     } catch (error: any) {
-      toast.error('Make sure you removed all products using this category first.');
+      toast.error('Make sure you removed all campaign first.');
     } finally {
       setLoading(false);
       setOpen(false);
@@ -98,13 +102,13 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
 
   return (
     <>
-    <AlertModal 
-      isOpen={open} 
-      onClose={() => setOpen(false)}
-      onConfirm={onDelete}
-      loading={loading}
-    />
-     <div className="flex items-center justify-between">
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={loading}
+      />
+      <div className="flex items-center justify-between">
         <Heading title={title} description={description} />
         {initialData && (
           <Button
@@ -123,39 +127,75 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           <div className="md:grid md:grid-cols-3 gap-8">
             <FormField
               control={form.control}
-              name="name"
+              name="campaign"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Campaign</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder="Category name" {...field} />
+                    <Input disabled={loading} placeholder="Campaign name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="billboardId"
+              name="heading"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Billboard</FormLabel>
-                  <Select disabled={loading} onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue defaultValue={field.value} placeholder="Select a billboard" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {billboards.map((billboard) => (
-                        <SelectItem key={billboard.id} value={billboard.id}>{billboard.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Heading</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Heading name" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+
+            <FormField
+              control={form.control}
+              name="descriptions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Descriptions</FormLabel>
+                  <FormControl>
+                    <Input disabled={loading} placeholder="Descriptions name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="raisedAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>RaisedAmount</FormLabel>
+                  <FormControl>
+                    <Input type="number" disabled={loading} placeholder="9.99" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="goalAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>GoalAmount</FormLabel>
+                  <FormControl>
+                    <Input type="number" disabled={loading} placeholder="9.99" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="imageUrl"
@@ -163,9 +203,9 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                 <FormItem>
                   <FormLabel>Background image</FormLabel>
                   <FormControl>
-                    <ImageUpload 
-                      value={field.value ? [field.value] : []} 
-                      disabled={loading} 
+                    <ImageUpload
+                      value={field.value ? [field.value] : []}
+                      disabled={loading}
                       onChange={(url) => field.onChange(url)}
                       onRemove={() => field.onChange('')}
                     />
