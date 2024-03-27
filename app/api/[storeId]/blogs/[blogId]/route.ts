@@ -5,29 +5,29 @@ import prismadb from "@/lib/prismadb";
 
 export async function GET(
   req: Request,
-  { params }: { params: { campaignId: string } }
+  { params }: { params: { blogId: string } }
 ) {
   try {
-    if (!params.campaignId) {
-      return new NextResponse("Campaign id is required", { status: 400 });
+    if (!params.blogId) {
+      return new NextResponse("Blog id is required", { status: 400 });
     }
 
-    const campaign = await prismadb.campaign.findUnique({
+    const blog = await prismadb.blog.findUnique({
       where: {
-        id: params.campaignId
+        id: params.blogId
       }
     });
   
-    return NextResponse.json(campaign);
+    return NextResponse.json(blog);
   } catch (error) {
-    console.log('[CAMPAIGN_GET]', error);
+    console.log('[BLOG_GET]', error);
     return new NextResponse("Internal error", { status: 500 });
   }
 };
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { campaignId: string, storeId: string } }
+  { params }: { params: { blogId: string, storeId: string } }
 ) {
   try {
     const { userId } = auth();
@@ -36,8 +36,8 @@ export async function DELETE(
       return new NextResponse("Unauthenticated", { status: 403 });
     }
 
-    if (!params.campaignId) {
-      return new NextResponse("Campaign id is required", { status: 400 });
+    if (!params.blogId) {
+      return new NextResponse("Blog id is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -51,13 +51,13 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const campaign = await prismadb.campaign.delete({
+    const blog = await prismadb.blog.delete({
       where: {
-        id: params.campaignId,
+        id: params.blogId,
       }
     });
   
-    return NextResponse.json(campaign);
+    return NextResponse.json(blog);
   } catch (error) {
     console.log('[CAMPAIGN_DELETE]', error);
     return new NextResponse("Internal error", { status: 500 });
@@ -67,7 +67,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { campaignId: string, storeId: string } }
+  { params }: { params: { blogId: string, storeId: string } }
 ) {
   try {   
     const { userId } = auth();
@@ -78,26 +78,25 @@ export async function PATCH(
       heading,
       imageUrl,
       descriptions,
-      goalAmount,
-      raisedAmount } = body;
+      author, } = body;
     
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 403 });
-    }
-
-    if (!campaign) {
-      return new NextResponse("Campaign is required", { status: 400 });
-    }
-
-    if (!imageUrl ) {
-      return new NextResponse("Image is required", { status: 400 });
-    }
-
-    if (!heading) {
-      return new NextResponse("Heading is required", { status: 400 });
-    }
-    if (!params.campaignId) {
-      return new NextResponse("Category id is required", { status: 400 });
+      if (!userId) {
+        return new NextResponse("Unauthenticated", { status: 403 });
+      }
+  
+      if (!imageUrl ) {
+        return new NextResponse("Image is required", { status: 400 });
+      }
+  
+      if (!heading) {
+        return new NextResponse("Heading is required", { status: 400 });
+      }
+  
+      if (!descriptions) {
+        return new NextResponse("Descriptions is required", { status: 400 });
+      }
+    if (!params.blogId) {
+      return new NextResponse("Blog id is required", { status: 400 });
     }
 
     const storeByUserId = await prismadb.store.findFirst({
@@ -111,21 +110,19 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    const campaigns = await prismadb.campaign.update({
+    const blogs = await prismadb.blog.update({
       where: {
-        id: params.campaignId,
+        id: params.blogId,
       },
       data: {
-        campaign,
         heading,
         imageUrl,
         descriptions,
-        goalAmount,
-        raisedAmount,
+        author,
       }
     });
   
-    return NextResponse.json(campaigns);
+    return NextResponse.json(blogs);
   } catch (error) {
     console.log('[CAMPAIGN_PATCH]', error);
     return new NextResponse("Internal error", { status: 500 });

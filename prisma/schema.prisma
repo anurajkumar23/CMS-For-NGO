@@ -62,7 +62,7 @@ model Blog {
   imageUrl     String
   heading      String
   descriptions String
-  author       String
+  author       String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -97,7 +97,8 @@ model Gallery {
   storeId String // Foreign Key to Store
   store   Store   @relation("GalleryToStore", fields: [storeId], references: [id])
   images  Image[]
-
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   @@map("Gallery")
 }
 
@@ -109,6 +110,8 @@ model User {
   phone   String
   email   String
   address String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Image {
@@ -130,6 +133,8 @@ model FeatureBar {
   lifeSaved  String?
   donated    String?
   volunteers String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 enum CitizenshipEnum {
@@ -145,17 +150,18 @@ model AboutUs {
   ourMembersUrl String?
   phoneNo       String?
   address       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("AboutUs")
 }
 
 model Trustee {
   id        String  @id @default(uuid()) @map("_id")
-  name      String
-  post      String
+  name      String?
+  post      String?
   photoUrl  String?
   aboutUs   AboutUs @relation("AboutUsToTrustee", fields: [aboutUsId], references: [id])
   aboutUsId String  @map("aboutUs") // Foreign Key to AboutUs
-
   @@map("Trustee")
 }
