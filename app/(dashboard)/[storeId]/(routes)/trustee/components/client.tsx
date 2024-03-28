@@ -9,14 +9,14 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 
 
-import { columns, AboutUsColumn } from "./columns";
+import { columns, TrusteeColumn } from "./columns";
 import { ApiList } from "@/components/ui/api-list";
 
-interface AboutUsClientProps {
-  data: AboutUsColumn[];
+interface TrusteeClientProps {
+  data: TrusteeColumn[];
 }
 
-export const AboutUsClient: React.FC<AboutUsClientProps> = ({
+export const TrusteeClient: React.FC<TrusteeClientProps> = ({
   data
 }) => {
   const params = useParams();
@@ -25,16 +25,16 @@ export const AboutUsClient: React.FC<AboutUsClientProps> = ({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title={`AboutUs (${data.length})`} description="Manage AboutUs for your store" />
-        <Button onClick={() => router.push(`/${params.storeId}/aboutUs/new`)}>
+        <Heading title={`Trustee (${data.length})`} description="Manage Trustee for your store" />
+        <Button onClick={() => router.push(`/${params.storeId}/trustee/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add New
         </Button>
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />
-      <Heading title="API" description="API Calls for AboutUs" />
+      <Heading title="API" description="API Calls for Trustee" />
       <Separator />
-      <ApiList entityName="aboutUs" entityIdName="aboutUsId" />
+      <ApiList entityName="trustee" entityIdName="trusteeId" />
     </>
   );
 };

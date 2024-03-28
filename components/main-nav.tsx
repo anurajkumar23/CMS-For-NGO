@@ -45,6 +45,11 @@ export function MainNav({
       label: 'AboutUs',
       active: pathname === `/${params.storeId}/aboutUs`,
     },
+    {
+      href: `/${params.storeId}/trustee`,
+      label: 'Trustee',
+      active: pathname === `/${params.storeId}/trustee`,
+    },
 
     // {
     //   href: `/${params.storeId}/sizes`,

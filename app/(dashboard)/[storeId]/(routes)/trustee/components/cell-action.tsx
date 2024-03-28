@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlertModal } from "@/components/modals/alert-modal";
 
-import { BlogColumn } from "./columns";
+import { TrusteeColumn } from "./columns";
 
 interface CellActionProps {
-  data: BlogColumn;
+  data: TrusteeColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({
@@ -33,11 +33,11 @@ export const CellAction: React.FC<CellActionProps> = ({
   const onConfirm = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/blogs/${data.id}`);
-      toast.success('Blog deleted.');
+      await axios.delete(`/api/${params.storeId}/trustee/${data.id}`);
+      toast.success('Trustee deleted.');
       router.refresh();
     } catch (error) {
-      toast.error('Make sure you blog.');
+      toast.error('Make sure you removed all Trustee first.');
     } finally {
       setOpen(false);
       setLoading(false);
@@ -46,7 +46,7 @@ export const CellAction: React.FC<CellActionProps> = ({
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success('Blog ID copied to clipboard.');
+    toast.success('Trustee ID copied to clipboard.');
   }
 
   return (
@@ -72,7 +72,7 @@ export const CellAction: React.FC<CellActionProps> = ({
             <Copy className="mr-2 h-4 w-4" /> Copy Id
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push(`/${params.storeId}/blogs/${data.id}`)}
+            onClick={() => router.push(`/${params.storeId}/trustee/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>
