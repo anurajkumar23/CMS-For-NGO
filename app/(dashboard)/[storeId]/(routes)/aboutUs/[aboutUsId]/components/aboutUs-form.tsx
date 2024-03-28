@@ -4,10 +4,10 @@ import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Trash } from "lucide-react";
-import { AboutUs, Trustee } from "@prisma/client";
+import { AboutUs} from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
@@ -29,20 +29,12 @@ const formSchema = z.object({
   phoneNo: z.string().min(1),
   address: z.string().min(1),
   ourMembersUrl: z.string().min(1),
-  trustees: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      post: z.string(),
-      photoUrl: z.string(),
-    })
-  )
 });
 
 type AboutUsFormValues = z.infer<typeof formSchema>;
 
 interface AboutUsFormProps {
-  initialData: AboutUs & { trustees: Trustee[] } | null;
+  initialData: AboutUs | null;
 }
 
 export const AboutUsForm: React.FC<AboutUsFormProps> = ({ initialData }) => {
@@ -63,15 +55,9 @@ export const AboutUsForm: React.FC<AboutUsFormProps> = ({ initialData }) => {
       phoneNo: "",
       address: "",
       ourMembersUrl: "",
-      trustees: [],
     },
   });
 
-  const { control, handleSubmit, formState: { errors } } = form;
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "trustees",
-  });
 
   const onSubmit = async (data: AboutUsFormValues) => {
     try {
@@ -107,140 +93,81 @@ export const AboutUsForm: React.FC<AboutUsFormProps> = ({ initialData }) => {
   };
   return (
     <>
-      <AlertModal
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        onConfirm={onDelete}
-        loading={loading}
-      />
-      <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
-        {initialData && (
-          <Button
-            disabled={loading}
-            variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-      <Separator />
-      <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 w-full">
-          <div className="md:grid md:grid-cols-3 gap-8">
-            <FormField
-              control={control}
-              name="phoneNo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Enter phone number" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.phoneNo && errors.phoneNo.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input disabled={loading} placeholder="Enter address" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.address && errors.address.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="ourMembersUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ourMembersUrl image</FormLabel>
-                  <FormControl>
-                    <ImageUpload
-                      value={field.value ? [field.value] : []}
-                      disabled={loading}
-                      onChange={(url) => field.onChange(url)}
-                      onRemove={() => field.onChange('')}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Separator />
-          <div className="space-y-8">
-            <h3 className="text-lg font-medium">Trustees</h3>
-            <div>
-              {fields.map((item, index) => (
-                <div key={item.id} className="md:grid md:grid-cols-3 gap-8">
-                  <FormField
-                    control={control}
-                    name={`trustees.${index}.name`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Name</FormLabel>
-                        <FormControl>
-                          <Input disabled={loading} placeholder="Enter name" {...field} />
-                        </FormControl>
-                        <FormMessage>{errors.trustees?.[index]?.name?.message}</FormMessage>
-                      </FormItem>
-                    )}
+    <AlertModal
+      isOpen={open}
+      onClose={() => setOpen(false)}
+      onConfirm={onDelete}
+      loading={loading}
+    />
+    <div className="flex items-center justify-between">
+      <Heading title={title} description={description} />
+      {initialData && (
+        <Button
+          disabled={loading}
+          variant="destructive"
+          size="sm"
+          onClick={() => setOpen(true)}
+        >
+          <Trash className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
+    <Separator />
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+        <div className="md:grid md:grid-cols-3 gap-8">
+          <FormField
+            control={form.control}
+            name="phoneNo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>PhoneNo</FormLabel>
+                <FormControl>
+                  <Input disabled={loading} placeholder="phoneNo name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Address</FormLabel>
+                <FormControl>
+                  <Input disabled={loading} placeholder="Address name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="ourMembersUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ourMembersUrl image</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    value={field.value ? [field.value] : []}
+                    disabled={loading}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange('')}
                   />
-                  <FormField
-                    control={control}
-                    name={`trustees.${index}.post`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Post</FormLabel>
-                        <FormControl>
-                          <Input disabled={loading} placeholder="Enter post" {...field} />
-                        </FormControl>
-                        <FormMessage>{errors.trustees?.[index]?.post?.message}</FormMessage>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={control}
-                    name={`trustees.${index}.photoUrl`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Photo URL</FormLabel>
-                        <FormControl>
-                          <ImageUpload
-                            value={field.value ? [field.value] : []}
-                            disabled={loading}
-                            onChange={(url) => field.onChange(url)}
-                            onRemove={() => field.onChange('')}
-                          />
-                        </FormControl>
-                        <FormMessage>{errors.trustees?.[index]?.photoUrl?.message}</FormMessage>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              ))}
-            </div>
-            <Button
-              variant="default"
-              size="sm"
-              onClick={() => append({ name: "", post: "", photoUrl: "" })} // Add a new trustee
-            >
-              Add Trustee
-            </Button>
-          </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
-        </form>
-      </Form>
-    </>
-  );
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <Button disabled={loading} className="ml-auto" type="submit">
+          {action}
+        </Button>
+      </form>
+    </Form>
+  </>
+);
 };

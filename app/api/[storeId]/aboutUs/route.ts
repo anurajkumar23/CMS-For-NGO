@@ -12,7 +12,7 @@ export async function POST(
 
     const body = await req.json();
 
-    const {ourMembersUrl, phoneNo, address, trustees } = body;
+    const {ourMembersUrl, phoneNo, address } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -39,15 +39,7 @@ export async function POST(
         phoneNo, 
         address,
         storeId: params.storeId,
-        trustees: {
-          createMany: {
-            data: trustees.map((trustee: {name: string, post: string, photoUrl: string}) => ({
-              name: trustee.name,
-              post: trustee.post,
-              photoUrl: trustee.photoUrl,
-            })),
-          },
-        },
+
       },
     });
   
@@ -70,9 +62,6 @@ export async function GET(
     const aboutUs = await prismadb.aboutUs.findMany({
       where: {
         storeId: params.storeId,
-      },
-      include: {
-        trustees: true,
       },
       orderBy: {
         createdAt: 'desc',

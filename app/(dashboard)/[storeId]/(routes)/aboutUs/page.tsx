@@ -14,9 +14,6 @@ const AboutUsPage = async ({
     where: {
       storeId: params.storeId
     },
-    include: {
-      trustees: true,
-    },
     orderBy: {
       createdAt: 'desc'
     }
@@ -28,12 +25,6 @@ const AboutUsPage = async ({
     phoneNo: item.phoneNo,
     address: item.address,
     createdAt: format(item.createdAt, 'MMMM do, yyyy'),
-    trustees: item.trustees.map((trustee) => ({
-      id: trustee.id,
-      name: trustee.name,
-      post: trustee.post,
-      photoUrl: trustee.photoUrl
-    }))
   }));
 
   return (

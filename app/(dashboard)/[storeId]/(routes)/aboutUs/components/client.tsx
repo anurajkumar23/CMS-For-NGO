@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { ApiAlert } from "@/components/ui/api-alert";
+
 
 import { columns, AboutUsColumn } from "./columns";
 import { ApiList } from "@/components/ui/api-list";
@@ -25,10 +25,8 @@ export const AboutUsClient: React.FC<AboutUsClientProps> = ({
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title={`AboutUs (${data.length})`} description="Manage AboyUs for your store" />
-        <Button onClick={() => router.push(`/${params.storeId}/aboutUs/new`)}>
-          <Plus className="mr-2 h-4 w-4" /> Add New
-        </Button>
+        <Heading title={`AboutUs (${data.length})`} description="Manage AboutUs for your store" />
+
       </div>
       <Separator />
       <DataTable searchKey="name" columns={columns} data={data} />

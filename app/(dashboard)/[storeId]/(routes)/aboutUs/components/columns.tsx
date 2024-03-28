@@ -8,16 +8,7 @@ export type AboutUsColumn = {
   id: string
   phoneNo: string
   address: string
-  trustees: Trustee[]
 }
-
-
-export type Trustee = {
-  id: string;
-  name: string;
-  post: string;
-  photoUrl: string;
-};
 
 export const columns: ColumnDef<AboutUsColumn>[] = [
   {
@@ -31,17 +22,6 @@ export const columns: ColumnDef<AboutUsColumn>[] = [
   {
     accessorKey: "createdAt",
     header: "Date",
-  },
-  {
-    id: "trustees", // Assuming trustee data will be rendered in a separate column
-    header: "Trustees",
-    cell: ({ value }) => (
-      <ul>
-        {value.map((trustee: Trustee) => (
-          <li key={trustee.id}>{trustee.name} - {trustee.post}</li>
-        ))}
-      </ul>
-    ),
   },
   {
     id: "actions",

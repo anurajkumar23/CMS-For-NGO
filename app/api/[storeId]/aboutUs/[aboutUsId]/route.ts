@@ -16,9 +16,6 @@ export async function GET(
       where: {
         id: params.aboutUsId,
       },
-      include: {
-        trustees: true,
-      },
     });
 
     return NextResponse.json(aboutUs);
@@ -77,7 +74,7 @@ export async function PATCH(
 
     const body = await req.json();
 
-    const { ourMembersUrl, phoneNo, address, trustees } = body;
+    const { ourMembersUrl, phoneNo, address } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 403 });
@@ -98,7 +95,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
-    await prismadb.aboutUs.update({
+    const aboutUs = await prismadb.aboutUs.update({
       where: {
         id: params.aboutUsId,
       },
@@ -106,26 +103,6 @@ export async function PATCH(
         ourMembersUrl,
         phoneNo,
         address,
-        trustees: {
-          deleteMany: {}, // Delete existing trustees
-        },
-      },
-    });
-
-    const aboutUs = await prismadb.aboutUs.update({
-      where: {
-        id: params.aboutUsId,
-      },
-      data: {
-        trustees: {
-          createMany: {
-            data: trustees.map((trustee: {name: string, post: string, photoUrl: string}) => ({
-              name: trustee.name,
-              post: trustee.post,
-              photoUrl: trustee.photoUrl,
-            })),
-          },
-        },
       },
     });
 

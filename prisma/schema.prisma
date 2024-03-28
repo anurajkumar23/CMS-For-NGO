@@ -22,6 +22,7 @@ model Store {
   users       User[]       @relation("UsersToStore")
   featureBars FeatureBar[] @relation("FeatureBarsToStore")
   aboutUs     AboutUs[]    @relation("AboutUsToStore")
+  Trustee     Trustee[]    @relation("TrusteeToStore")
 }
 
 model Billboard {
@@ -93,25 +94,26 @@ model Donation {
 }
 
 model Gallery {
-  id      String  @id @default(uuid()) @map("_id")
-  storeId String // Foreign Key to Store
-  store   Store   @relation("GalleryToStore", fields: [storeId], references: [id])
-  images  Image[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(uuid()) @map("_id")
+  storeId   String // Foreign Key to Store
+  store     Store    @relation("GalleryToStore", fields: [storeId], references: [id])
+  images    Image[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@map("Gallery")
 }
 
 model User {
-  id      String @id @default(uuid()) @map("_id")
-  storeId String // Foreign Key to Store
-  store   Store  @relation("UsersToStore", fields: [storeId], references: [id])
-  name    String
-  phone   String
-  email   String
-  address String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(uuid()) @map("_id")
+  storeId   String // Foreign Key to Store
+  store     Store    @relation("UsersToStore", fields: [storeId], references: [id])
+  name      String
+  phone     String
+  email     String
+  address   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Image {
@@ -126,15 +128,15 @@ model Image {
 }
 
 model FeatureBar {
-  id         String  @id @default(uuid()) @map("_id")
+  id         String   @id @default(uuid()) @map("_id")
   storeId    String // Foreign Key to Store
-  store      Store   @relation("FeatureBarsToStore", fields: [storeId], references: [id])
+  store      Store    @relation("FeatureBarsToStore", fields: [storeId], references: [id])
   donors     String?
   lifeSaved  String?
   donated    String?
   volunteers String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 enum CitizenshipEnum {
@@ -143,25 +145,25 @@ enum CitizenshipEnum {
 }
 
 model AboutUs {
-  id            String    @id @default(uuid()) @map("_id")
+  id            String   @id @default(uuid()) @map("_id")
   storeId       String // Foreign Key to Store
-  store         Store     @relation("AboutUsToStore", fields: [storeId], references: [id])
-  trustees      Trustee[] @relation("AboutUsToTrustee")
+  store         Store    @relation("AboutUsToStore", fields: [storeId], references: [id])
   ourMembersUrl String?
   phoneNo       String?
   address       String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("AboutUs")
 }
 
 model Trustee {
-  id        String  @id @default(uuid()) @map("_id")
-  name      String?
-  post      String?
-  photoUrl  String?
-  aboutUs   AboutUs @relation("AboutUsToTrustee", fields: [aboutUsId], references: [id])
-  aboutUsId String  @map("aboutUs") // Foreign Key to AboutUs
+  id       String  @id @default(uuid()) @map("_id")
+  storeId  String // Foreign Key to Store
+  store    Store   @relation("TrusteeToStore", fields: [storeId], references: [id])
+  name     String?
+  post     String?
+  photoUrl String?
+
   @@map("Trustee")
 }
