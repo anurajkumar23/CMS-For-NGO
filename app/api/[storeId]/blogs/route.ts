@@ -11,7 +11,6 @@ export async function POST(
     const { userId } = auth();
 
     const body = await req.json();
-
     const {
       heading,
       imageUrl,
