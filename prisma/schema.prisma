@@ -71,7 +71,7 @@ model Blog {
 }
 
 model Donation {
-  id           String          @id @default(uuid()) @map("_id")
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   storeId      String // Foreign Key to Store
   store        Store           @relation("DonationsToStore", fields: [storeId], references: [id])
   campaign     Campaign        @relation("DonationsToCampaign", fields: [campaignId], references: [id])
@@ -105,7 +105,7 @@ model Gallery {
 }
 
 model User {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   storeId   String // Foreign Key to Store
   store     Store    @relation("UsersToStore", fields: [storeId], references: [id])
   name      String
@@ -158,14 +158,14 @@ model AboutUs {
 }
 
 model Trustee {
-  id       String  @id @default(uuid()) @map("_id")
-  storeId  String // Foreign Key to Store
-  store    Store   @relation("TrusteeToStore", fields: [storeId], references: [id])
-  name     String?
-  post     String?
-  photoUrl String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(uuid()) @map("_id")
+  storeId   String // Foreign Key to Store
+  store     Store    @relation("TrusteeToStore", fields: [storeId], references: [id])
+  name      String?
+  post      String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("Trustee")
 }

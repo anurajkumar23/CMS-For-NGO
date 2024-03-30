@@ -50,6 +50,11 @@ export function MainNav({
       label: 'Trustee',
       active: pathname === `/${params.storeId}/trustee`,
     },
+    {
+      href: `/${params.storeId}/users`,
+      label: 'Users',
+      active: pathname === `/${params.storeId}/users`,
+    },
 
     // {
     //   href: `/${params.storeId}/sizes`,
