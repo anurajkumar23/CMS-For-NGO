@@ -31,7 +31,7 @@ const formSchema = z.object({
   heading: z.string().min(1),
   descriptions: z.string().min(1),
   raisedAmount: z.coerce.number().min(1).optional(),
-  goalAmount: z.coerce.number().min(1),
+  goalAmount: z.coerce.number().min(1).optional(),
   imageUrl: z.string().min(1),
 });
 
@@ -57,17 +57,17 @@ export const CampaignForm: React.FC<CampaignFormProps> = ({
 
   const defaultValues = initialData ? {
     ...initialData,
-    raisedAmount: initialData.raisedAmount !== null ? parseFloat(String(initialData.raisedAmount)) : null,
-    goalAmount: initialData.goalAmount !== null ? parseFloat(String(initialData.goalAmount)) : null,
+    raisedAmount: parseFloat(String(initialData?.raisedAmount)),
+    goalAmount: initialData?.goalAmount ? parseFloat(String(initialData.goalAmount)) : undefined,
+    descriptions: initialData.descriptions ?? '',
   } : {
     campaign: '',
     heading: '',
     descriptions: '',
-    raisedAmount: null,
-    goalAmount: null,
+    raisedAmount: 0,
+    goalAmount: undefined,
     imageUrl: '',
   };
-
   const form = useForm<CampaignFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues
