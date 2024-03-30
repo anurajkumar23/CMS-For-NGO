@@ -54,12 +54,19 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 
   const form = useForm<BillboardFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      label1: '',
-      label2: '',
-      linkUrl: '',
-      imageUrl: ''
-    }
+    defaultValues: initialData
+      ? {
+          label1: initialData.label1 || '',
+          label2: initialData.label2 || '',
+          linkUrl: initialData.linkUrl || '',
+          imageUrl: initialData.imageUrl || ''
+        }
+      : {
+          label1: '',
+          label2: '',
+          linkUrl: '',
+          imageUrl: ''
+        }
   });
 
   const onSubmit = async (data: BillboardFormValues) => {

@@ -55,12 +55,19 @@ export const BlogForm: React.FC<BlogFormProps> = ({
 
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      heading: '',
-      descriptions:'',
-      author: '',
-      imageUrl: '',
-    }
+    defaultValues: initialData
+      ? {
+          heading: initialData.heading || '',
+          descriptions: initialData.descriptions || '',
+          author: initialData.author || '',
+          imageUrl: initialData.imageUrl || '',
+        }
+      : {
+          heading: '',
+          descriptions: '',
+          author: '',
+          imageUrl: '',
+        },
   });
 
   const onSubmit = async (data: BlogFormValues) => {

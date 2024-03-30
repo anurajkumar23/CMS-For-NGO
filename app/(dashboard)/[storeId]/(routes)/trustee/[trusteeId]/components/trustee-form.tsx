@@ -52,14 +52,22 @@ export const TrusteeForm: React.FC<TrusteeFormProps> = ({
   const toastMessage = initialData ? 'Trustee updated.' : 'Trustee created.';
   const action = initialData ? 'Save changes' : 'Create';
 
+
   const form = useForm<TrusteeFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
-      name: "",
-      post: "",
-      photoUrl: "",
-    }
+    defaultValues: initialData
+      ? {
+        name: initialData.name || '',
+        post: initialData.post || '',
+        photoUrl: initialData.photoUrl || '',
+      }
+      : {
+        name: '',
+        post: '',
+        photoUrl: '',
+      },
   });
+
 
   const onSubmit = async (data: TrusteeFormValues) => {
     try {
@@ -119,7 +127,7 @@ export const TrusteeForm: React.FC<TrusteeFormProps> = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
           <div className="md:grid md:grid-cols-3 gap-8">
-            
+
             <FormField
               control={form.control}
               name="name"

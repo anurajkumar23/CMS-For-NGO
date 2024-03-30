@@ -49,14 +49,22 @@ export const AboutUsForm: React.FC<AboutUsFormProps> = ({ initialData }) => {
   const toastMessage = initialData ? "AboutUs updated." : "AboutUs created.";
   const action = initialData ? "Save changes" : "Create";
 
-  const form = useForm<AboutUsFormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+  const defaultValues: AboutUsFormValues = initialData
+  ? {
+      phoneNo: initialData.phoneNo || "",
+      address: initialData.address || "",
+      ourMembersUrl: initialData.ourMembersUrl || "",
+    }
+  : {
       phoneNo: "",
       address: "",
       ourMembersUrl: "",
-    },
-  });
+    };
+
+const form = useForm<AboutUsFormValues>({
+  resolver: zodResolver(formSchema),
+  defaultValues,
+});
 
 
   const onSubmit = async (data: AboutUsFormValues) => {
