@@ -21,11 +21,12 @@ const BillboardsPage = async ({
 
   const formattedBillboards: BillboardColumn[] = billboards.map((item) => ({
     id: item.id,
-    label1: item.label1,
-    label2: item.label2,
-    linkUrl:  item.linkUrl,
-    createdAt: format(item.createdAt, 'MMMM do, yyyy'),
+    label1: item.label1 ?? '', // Use an empty string as the default value if label1 is null
+    label2: item.label2 ?? '', // Use an empty string as the default value if label2 is null
+    linkUrl: item.linkUrl ?? '', // Use an empty string as the default value if linkUrl is null
+    createdAt: format(new Date(item.createdAt), 'MMMM do, yyyy'), // Assuming `format` is a function that formats dates
   }));
+  
 
   return (
     <div className="flex-col">

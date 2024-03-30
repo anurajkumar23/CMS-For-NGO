@@ -19,13 +19,13 @@ const AboutUsPage = async ({
     }
   });
 
-  const formattedAboutUs: AboutUsColumn[] = aboutUs.map((item) => ({
-    id: item.id,
-    ourMembersUrl: item.ourMembersUrl,
-    phoneNo: item.phoneNo,
-    address: item.address,
-    createdAt: format(item.createdAt, 'MMMM do, yyyy'),
-  }));
+ const formattedAboutUs: AboutUsColumn[] = aboutUs.map((item) => ({
+  id: item.id,
+  ourMembersUrl: item.ourMembersUrl,
+  phoneNo: item.phoneNo ?? '', // Use an empty string as the default value if phoneNo is null
+  address: item.address ?? '', // Similarly, use an empty string as the default value for address if null
+  createdAt: format(new Date(item.createdAt), 'MMMM do, yyyy'), // Assuming `format` is a function that formats dates
+}));
 
   return (
     <div className="flex-col">

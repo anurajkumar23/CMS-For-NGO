@@ -21,9 +21,9 @@ const TrusteePage = async ({
 
   const formattedTrustee: TrusteeColumn[] = trustee.map((item) => ({
     id: item.id,
-    photoUrl: item.photoUrl,
-    name: item.name,
-    post: item.post,
+    photoUrl: item.photoUrl ?? '',
+    name: item.name ?? '',
+    post: item.post ?? '',
     createdAt: format(item.createdAt, 'MMMM do, yyyy'),
   }));
 

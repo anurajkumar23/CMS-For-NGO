@@ -21,11 +21,12 @@ const BlogPage = async ({
 
   const formattedBlogs: BlogColumn[] = blogs.map((item) => ({
     id: item.id,
-    heading: item.heading,
-    descriptions: item.descriptions,
-    author: item.author,
-    createdAt: format(item.createdAt, 'MMMM do, yyyy'),
+    heading: item.heading ?? '', // Use an empty string as the default value if heading is null
+    descriptions: item.descriptions ?? '', // Use an empty string as the default value if descriptions is null
+    author: item.author ?? '', // Use an empty string as the default value if author is null
+    createdAt: format(item.createdAt, 'MMMM do, yyyy'), // Assuming `format` is a function that formats dates
   }));
+  
 
   return (
     <div className="flex-col">
