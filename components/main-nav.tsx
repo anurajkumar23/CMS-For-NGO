@@ -55,6 +55,11 @@ export function MainNav({
       label: 'Users',
       active: pathname === `/${params.storeId}/users`,
     },
+    {
+      href: `/${params.storeId}/donations`,
+      label: 'Donations',
+      active: pathname === `/${params.storeId}/donations`,
+    },
 
     // {
     //   href: `/${params.storeId}/sizes`,
