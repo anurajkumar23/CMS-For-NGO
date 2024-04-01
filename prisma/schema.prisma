@@ -14,7 +14,6 @@ model Store {
   userId      String
   billboards  Billboard[]  @relation("BillboardsToStore")
   campaigns   Campaign[]   @relation("CampaignsToStore")
-  donations   Donation[]   @relation("DonationsToStore")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   blogs       Blog[]       @relation("BlogsToStore")
@@ -23,6 +22,7 @@ model Store {
   featureBars FeatureBar[] @relation("FeatureBarsToStore")
   aboutUs     AboutUs[]    @relation("AboutUsToStore")
   Trustee     Trustee[]    @relation("TrusteeToStore")
+  donations   Donation[]   @relation("DonationToStore")
 }
 
 model Billboard {
@@ -40,17 +40,16 @@ model Billboard {
 }
 
 model Campaign {
-  id           String     @id @default(uuid()) @map("_id")
+  id           String   @id @default(uuid()) @map("_id")
   storeId      String // Foreign Key to Store
-  store        Store      @relation("CampaignsToStore", fields: [storeId], references: [id])
+  store        Store    @relation("CampaignsToStore", fields: [storeId], references: [id])
   campaign     String
   heading      String
   imageUrl     String
   descriptions String?
   goalAmount   Float?
   raisedAmount Float?
-  donations    Donation[] @relation("DonationsToCampaign")
-  createdAt    DateTime   @default(now()) @map("createdAt")
+  createdAt    DateTime @default(now()) @map("createdAt")
 
   @@index([storeId])
   @@map("Campaigns")
@@ -71,11 +70,10 @@ model Blog {
 }
 
 model Donation {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String          @id @default(auto()) @map("_id") @db.ObjectId
   storeId      String // Foreign Key to Store
-  store        Store           @relation("DonationsToStore", fields: [storeId], references: [id])
-  campaign     Campaign        @relation("DonationsToCampaign", fields: [campaignId], references: [id])
-  campaignId   String          @map("campaignsId") // Foreign Key to Campaigns
+  store        Store           @relation("DonationToStore", fields: [storeId], references: [id])
+  campaign     String
   amount       Float
   citizenship  CitizenshipEnum
   fullName     String

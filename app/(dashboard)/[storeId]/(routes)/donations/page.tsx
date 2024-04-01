@@ -14,9 +14,6 @@ const DonationPage = async ({
     where: {
       storeId: params.storeId
     },
-    include: {
-      campaign: true,
-    },
     orderBy: {
       createdAt: 'desc'
     }
@@ -28,7 +25,7 @@ const DonationPage = async ({
     citizenship: item.citizenship,
     fullName: item.fullName,
     email: item.email,
-    campaign: item.campaign.campaign,
+    campaign: item.campaign,
     phoneNumber: item.phoneNumber,
     governmentId: item.governmentId,
     address: item.address,

@@ -34,7 +34,7 @@ export const DonationClient: React.FC<DonationClientProps> = ({
       <DataTable searchKey="name" columns={columns} data={data} />
       <Heading title="API" description="API Calls for Donation" />
       <Separator />
-      <ApiList entityName="user" entityIdName="userId" />
+      <ApiList entityName="donations" entityIdName="donationId" />
     </>
   );
 };

@@ -8,10 +8,11 @@ export async function POST(
   { params }: { params: { storeId: string } }
 ) {
   try {
+  
     const body = await req.json();
 
     const {
-      campaignId,
+      campaign,
       amount,
       citizenship,
       fullName,
@@ -29,24 +30,28 @@ export async function POST(
       return new NextResponse("Amount is required", { status: 403 });
     }
 
-    if (!citizenship) {
-      return new NextResponse("Citizenship is required", { status: 403 });
+    
+    if (!campaign) {
+      return new NextResponse("Campaign is required", { status: 403 });
     }
+    // if (!citizenship) {
+    //   return new NextResponse("citizenship is required", { status: 403 });
+    // }
 
     if (!fullName) {
       return new NextResponse("Full Name is required", { status: 403 });
     }
 
     if (!email) {
-      return new NextResponse("Email is required", { status: 403 });
+      return new NextResponse("email ID is required", { status: 403 });
     }
 
     if (!phoneNumber) {
-      return new NextResponse("Phone number is required", { status: 403 });
+      return new NextResponse("Phone Number is required", { status: 403 });
     }
 
     if (!governmentId) {
-      return new NextResponse("Government ID is required", { status: 403 });
+      return new NextResponse("GovernmentId is required", { status: 403 });
     }
 
     if (!address) {
@@ -54,16 +59,20 @@ export async function POST(
     }
 
     if (!pincode) {
-      return new NextResponse("Pin code is required", { status: 403 });
+      return new NextResponse("pincode is required", { status: 403 });
     }
 
     if (!state) {
-      return new NextResponse("State is required", { status: 403 });
+      return new NextResponse("state is required", { status: 403 });
     }
 
     if (!city) {
       return new NextResponse("city is required", { status: 403 });
     }
+
+    // if (!isPaid) {
+    //   return new NextResponse("isPaid is required", { status: 403 });
+    // }
 
     if (!params.storeId) {
       return new NextResponse("Store id is required", { status: 400 });
@@ -72,6 +81,7 @@ export async function POST(
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
+        
       },
     });
 
@@ -81,19 +91,23 @@ export async function POST(
 
     const donation = await prismadb.donation.create({
       data: {
-      campaignId,
-      amount,
-      citizenship,
-      fullName,
-      email,
-      phoneNumber,
-      governmentId,
-      address,
-      pincode,
-      state,
-      city,
-      isPaid,
-        storeId: params.storeId,
+        campaign,
+        amount,
+        citizenship,
+        fullName,
+        email,
+        phoneNumber,
+        governmentId,
+        address,
+        pincode,
+        state,
+        city,
+        isPaid,
+        store: {
+          connect: {
+            id: params.storeId, // Connect to the Store by its ID
+          },
+        },
       },
     });
 
@@ -109,13 +123,11 @@ export async function GET(
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const { userId } = auth();
-    const { searchParams } = new URL(req.url)
-    const campaignId = searchParams.get('campaignId') || undefined;
-
-    if (!userId) {
-      return new NextResponse("Unauthenticated", { status: 403 });
-    }
+    // const { userId } = auth();
+    
+    // if (!userId) {
+    //   return new NextResponse("Unauthenticated", { status: 403 });
+    // }
 
     if (!params.storeId) {
       return new NextResponse("Store id is required", { status: 400 });
@@ -124,7 +136,7 @@ export async function GET(
     const storeByUserId = await prismadb.store.findFirst({
       where: {
         id: params.storeId,
-        userId,
+        
       },
     });
 
@@ -132,10 +144,10 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 405 });
     }
 
+
     const donation = await prismadb.donation.findMany({
       where: {
         storeId: params.storeId,
-        campaignId
       },
       orderBy: {
         createdAt: "desc",
